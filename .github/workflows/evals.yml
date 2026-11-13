@@ -1,0 +1,29 @@
+name: evals
+
+# Runs the offline eval suite on every push and pull request.
+# No API key is needed: the plain-English cases are skipped here and run locally with --live.
+
+on:
+  push:
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  offline-evals:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+          cache: pip
+
+      - name: Install dependencies
+        run: python -m pip install -r requirements.txt
+
+      - name: Rebuild the database from the raw export and run the evals
+        run: python -m evals
