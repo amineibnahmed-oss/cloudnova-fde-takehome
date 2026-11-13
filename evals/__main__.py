@@ -25,6 +25,7 @@ CASE_MODULES = (
     "evals.cases_pipeline",
     "evals.cases_metrics",
     "evals.cases_guardrails",
+    "evals.cases_agent_loop",
     "evals.cases_expected_fail",
     "evals.cases_live",
 )
@@ -33,8 +34,21 @@ CASE_MODULES = (
 def load_cases() -> list[Case]:
     cases: list[Case] = []
     for name in CASE_MODULES:
-        cases.extend(importlib.import_module(name).CASES)
+        try:
+            cases.extend(importlib.import_module(name).CASES)
+        except ModuleNotFoundError as exc:
+            if exc.name != name:
+                raise
+            # A missing case module is a failure, never a silent skip.
+            short = name.rsplit(".", 1)[-1]
+            cases.append(Case(short, f"case module {name} is missing", _missing(name)))
     return cases
+
+
+def _missing(name: str):
+    def run(_ctx: Context) -> str:
+        raise AssertionError(f"{name} could not be imported")
+    return run
 
 
 def main(argv: list[str] | None = None) -> int:

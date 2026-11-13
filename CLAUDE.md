@@ -42,6 +42,49 @@ evals/reference/               standalone reference calculation, shares no code 
 
 Interfaces that other modules rely on are in the docstrings of `app/settings.py`, `app/db.py`, `app/reference_sql.py` and `evals/harness.py`. Do not rename them.
 
+## Interfaces other modules rely on
+
+```python
+# app/pipeline/build.py
+def build(csv_path: Path, db_path: Path, rules_path: Path, as_of: date | None = None,
+          report_path: Path | None = None, fx_mode: str | None = None) -> dict:
+    """Run the whole pipeline into a fresh database file and return the run report.
+    as_of: R20, defaults to config [run].as_of_date, then to today.
+    fx_mode: overrides config [fx].mode ("multiply" or "divide")."""
+
+# run report (R21), also written as JSON to report_path
+{"as_of_date": "YYYY-MM-DD", "fx_mode": "multiply",
+ "rows_read": 0, "rows_rejected": 0, "reject_reasons": {"reason": 0},
+ "exact_duplicate_rows_dropped": 0,
+ "duplicates_by_kind": {"exact_copy": 0, "same_meaning": 0, "status_conflict": 0},
+ "tables": {"invoices": 0, "invoice_contacts": 0, "accounts": 0, "dq_duplicates": 0, "rejects": 0},
+ "flags": {"dq_status_conflict": 0, "dq_missing_cents": 0, "dq_amount_off_formula": 0,
+           "dq_invoice_date_ambiguous": 0, "dq_signup_date_ambiguous": 0, "dq_future_dated": 0,
+           "dq_email_repaired": 0, "dq_identity_conflict": 0}}
+
+# app/sql_guard.py
+class GuardError(Exception): ...          # the SQL was refused (G2, G3); str(exc) is the reason
+class QueryError(Exception): ...          # the SQL ran and failed, or timed out (G5)
+@dataclass
+class QueryResult: columns: list[str]; rows: list[list]; row_count: int; truncated: bool
+def check_sql(con, sql: str) -> None      # raises GuardError
+def run_guarded(con, sql: str, row_limit: int, timeout_s: float) -> QueryResult
+
+# app/caveats.py
+@dataclass(frozen=True)
+class Caveat: id: str; text: str
+def caveats_for(sql: str, report: dict) -> list[Caveat]   # report gives the as-of date and flag counts
+
+# app/agent.py
+@dataclass
+class Answer: ...                          # the fields of specs/03 section 3, plus to_dict()
+def answer_question(question: str, settings: Settings, report: dict, con=None, client=None) -> Answer
+def answer_offline(query_id: str, settings: Settings, report: dict, con=None) -> Answer
+
+# app/cli.py
+def main(argv: list[str] | None = None) -> int
+```
+
 ## Commands
 
 ```

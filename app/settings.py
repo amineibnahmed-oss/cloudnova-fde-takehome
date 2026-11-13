@@ -25,6 +25,7 @@ class Settings:
     api_key: str | None     # None means offline
     model: str
     effort: str
+    use_fallbacks: bool     # server-side fallback when the model declines a request
     max_steps: int          # G6
     row_limit: int          # G4
     sql_timeout_s: float    # G5
@@ -81,6 +82,7 @@ def load_settings() -> Settings:
         api_key=key,
         model=os.environ.get("CLOUDNOVA_MODEL", "").strip() or "claude-opus-5-5",
         effort=os.environ.get("CLOUDNOVA_EFFORT", "").strip() or "medium",
+        use_fallbacks=os.environ.get("CLOUDNOVA_FALLBACKS", "1").strip() not in {"0", "false", "no"},
         max_steps=_int("CLOUDNOVA_MAX_STEPS", 4, 1, 10),
         row_limit=_int("CLOUDNOVA_ROW_LIMIT", 200, 1, 5000),
         sql_timeout_s=_float("CLOUDNOVA_SQL_TIMEOUT_S", 10.0, 0.5, 120.0),
