@@ -1,0 +1,16 @@
+# secrets
+.env
+.env.*
+!.env.example
+
+# local environment and build output
+.venv/
+build/
+__pycache__/
+*.pyc
+*.duckdb
+*.duckdb.wal
+.DS_Store
+
+# the assignment text belongs to the hiring team, so it stays local
+docs/TAKE_HOME_BRIEF.md
