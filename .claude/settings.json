@@ -1,0 +1,19 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(.venv/bin/python -m app:*)",
+      "Bash(.venv/bin/python -m evals:*)",
+      "Bash(.venv/bin/python evals/reference/expected_from_spec.py:*)",
+      "Bash(git status:*)",
+      "Bash(git diff:*)",
+      "Bash(git log:*)"
+    ],
+    "deny": [
+      "Read(./.env)",
+      "Read(./.env.*)",
+      "Edit(./data/**)",
+      "Write(./data/**)",
+      "Bash(git push:*)"
+    ]
+  }
+}

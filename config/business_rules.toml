@@ -1,0 +1,89 @@
+# Business rules for the CloudNova pipeline.
+# Code holds no business constants (specs/01_data_contract.md, section 11).
+
+[run]
+# R20. Leave commented to use the day the pipeline runs.
+# as_of_date = "2026-11-12"
+
+[prices_usd_per_seat_month]  # R18
+Starter = 49
+Pro = 99
+Enterprise = 299
+
+[billing]  # R18
+monthly_billed_months = 1
+annual_billed_months = 10
+
+[fx]  # R17, decision D1
+# "multiply" follows the briefing. "divide" is the other reading of the same rates.
+mode = "multiply"
+
+[fx.rate_to_usd]
+USD = "1"
+EUR = "1.08"
+GBP = "1.27"
+
+[currency_symbols]  # R12
+"$" = "USD"
+"€" = "EUR"
+"£" = "GBP"
+
+[allowed]  # R8
+regions = ["NA", "EMEA", "APAC", "LATAM"]
+currencies = ["USD", "EUR", "GBP"]
+
+[mappings.plan]  # R4, keys are lower case
+"starter" = "Starter"
+"start" = "Starter"
+"tier 1" = "Starter"
+"pro" = "Pro"
+"professional" = "Pro"
+"tier 2" = "Pro"
+"enterprise" = "Enterprise"
+"ent" = "Enterprise"
+"tier 3" = "Enterprise"
+
+[mappings.billing_cycle]  # R5
+"monthly" = "monthly"
+"annual" = "annual"
+"annually" = "annual"
+"yearly" = "annual"
+
+[mappings.status]  # R6
+"paid" = "paid"
+"complete" = "paid"
+"completed" = "paid"
+"success" = "paid"
+"pending" = "pending"
+"in_review" = "pending"
+"awaiting" = "pending"
+"failed" = "failed"
+"declined" = "failed"
+"error" = "failed"
+"refunded" = "refunded"
+"refund" = "refunded"
+"charged_back" = "refunded"
+"void" = "void"
+"cancelled" = "void"
+"canceled" = "void"
+
+[mappings.payment_method]  # R7
+"credit_card" = "credit_card"
+"credit card" = "credit_card"
+"ach" = "ach"
+"wire" = "wire"
+"wire transfer" = "wire"
+"invoice" = "invoice"
+
+[mappings.boolean]  # R8
+"true" = true
+"yes" = true
+"1" = true
+"y" = true
+"false" = false
+"no" = false
+"0" = false
+"n" = false
+
+[duplicates]  # R16c: the first status present wins, so "paid" needs every copy to say paid
+status_order = ["refunded", "void", "failed", "pending", "paid"]
