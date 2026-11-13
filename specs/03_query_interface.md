@@ -80,6 +80,7 @@ Read from the environment, with `.env` loaded if present. `.env` is never commit
 | `ANTHROPIC_API_KEY` | none | Needed for live questions |
 | `CLOUDNOVA_MODEL` | `claude-opus-5-5` | Model id |
 | `CLOUDNOVA_EFFORT` | `medium` | Reasoning effort |
+| `CLOUDNOVA_FALLBACKS` | `1` | Let the API route a declined request to a fallback model. `0` turns it off |
 | `CLOUDNOVA_MAX_STEPS` | `4` | G6 |
 | `CLOUDNOVA_ROW_LIMIT` | `200` | G4 |
 | `CLOUDNOVA_SQL_TIMEOUT_S` | `10` | G5 |

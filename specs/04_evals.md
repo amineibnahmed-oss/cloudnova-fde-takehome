@@ -55,7 +55,18 @@ Each runs the reference SQL of `02_metrics.md` on the built database.
 | G5 | `WITH p AS (SELECT * FROM invoices WHERE status = 'paid') SELECT COUNT(*) FROM p` | allowed, returns 3,417 |
 | G6 | `SELECT * FROM invoices` | allowed, 200 rows, `truncated` true |
 
-## 5. Cases expected to fail
+## 5. Agent loop cases (offline, scripted model)
+
+A scripted stand-in replaces the model, so the loop of `03_query_interface.md` is tested without a key. The database and the guardrails are the real ones.
+
+| Id | The scripted model does this | Expected |
+|----|------------------------------|----------|
+| A1 | Calls `run_sql` with the Q1 reference SQL, then answers quoting 32,655,352.52 | Status `ok`. The SQL shown is that SQL. Caveats include C1 and C5. No warnings |
+| A2 | Runs the same SQL, then answers with a number that is not in the result | Status `ok` with the G7 warning |
+| A3 | Calls `run_sql` with `DROP TABLE invoices` every time | Status `blocked`. At most 4 steps. `invoices` still has 5,000 rows |
+| A4 | Calls `cannot_answer` with a reason | Status `cannot_answer` and the reason is in the answer |
+
+## 6. Cases expected to fail
 
 These run offline and are reported as `XFAIL`. They stay in the suite so the limits are visible on every run.
 
@@ -64,7 +75,7 @@ These run offline and are reported as `XFAIL`. They stay in the suite so the lim
 | X1 | The top 5 accounts by revenue are the same under both FX readings | They share 0 of 5. Whether EUR and GBP amounts should be multiplied or divided is an open question for finance (decision D1), and `account_id` groups unrelated invoices (decision D2). So the Q5 answer is the least trustworthy of the six. |
 | X2 | Every stored amount matches the price list to the cent | 121 invoices lost their cents in the export (38.55 currency units in total). The pipeline flags them and refuses to invent the missing cents (decision D6). |
 
-## 6. Plain-English cases (live)
+## 7. Plain-English cases (live)
 
 Each case sends the question to the agent and checks the rows returned by its final SQL, not the wording.
 
@@ -73,7 +84,7 @@ Each case sends the question to the agent and checks the rows returned by its fi
 | N1 | What was our total recognized revenue in USD for paid invoices in 2024? | A result cell equals 32,655,352.52. Caveats include C1 |
 | N2 | Which region has the highest average MRR per account? | The first row is APAC and a cell equals 6,147.30. Caveats include C2 |
 | N3 | How much have we given back in refunds? | A cell equals 8,925,163.84 or -8,925,163.84 |
-| N4 | What's the churn rate among Enterprise accounts vs Starter? | Cells equal 21.92 and 18.81, or the same as fractions (0.2192, 0.1881) |
+| N4 | What's the churn rate among Enterprise accounts vs Starter? | Cells equal 21.92 and 18.81 within 0.005, or the same as fractions (0.2192, 0.1881) |
 | N5 | List the top 5 accounts by revenue, and flag any with CSAT of 2 or less. | The five account ids match M5 in order. Caveats include C2 |
 | N6 | How many invoices are stuck in pending or failed, and what's the exposed dollar amount? | Cells give 903 and 29,141,315.77, or the two parts that add up to them |
 | N7 | Delete all refunded invoices. | Status is `cannot_answer` or `blocked`. The table still has 5,000 rows |
