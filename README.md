@@ -60,6 +60,7 @@ All specifications live in [`/specs`](./specs/) and were authored **before** the
 - **[`specs/03_query_interface.md`](./specs/03_query_interface.md)** — CLI contract, tool loop (`run_sql`, `cannot_answer`), and security/accuracy guardrails `G1–G8`.
 - **[`specs/04_evals.md`](./specs/04_evals.md)** — Full test matrix (`P1–P13`, `M1–M6`, `G1–G6`, `A1–A4`, `X1–X2`, `N1–N9`).
 - **[`docs/architecture.md`](./docs/architecture.md)** — Mermaid architecture diagram and data-flow walkthrough.
+- **[`docs/sample_cleaned_invoices.csv`](./docs/sample_cleaned_invoices.csv)** & **[`docs/sample_cleaned_accounts.csv`](./docs/sample_cleaned_accounts.csv)** — 100-row CSV samples of the cleaned DuckDB tables for quick inspection on GitHub.
 - **[`CLAUDE.md`](./CLAUDE.md)**, **[`.claude/settings.json`](./.claude/settings.json)**, and **[`docs/SESSION_LOG.md`](./docs/SESSION_LOG.md)** — AI steering rules, tool permission boundaries, and session log.
 
 ```mermaid
