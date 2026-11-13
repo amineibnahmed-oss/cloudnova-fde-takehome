@@ -1,0 +1,11 @@
+invoice_id,account_id,account_name,contact_email,region,industry,plan,billing_cycle,seats,currency,amount,discount_pct,status,payment_method,signup_date,invoice_date,churned,csat_score,support_tickets
+INV-900001,ACC-9001,Acme Test Co,billing@acme.test,NA,Retail,Pro,monthly,10,USD,990.00,0,paid,ach,2023-01-15,2024-03-01,no,4,1
+INV-900002,ACC-9002,Globex Test Ltd,ap_at_globex.test,EMEA,,Tier 1,yearly,5,EUR,"€2,646.00",0,Complete,Wire Transfer,03/20/2023,Apr 30 2024,N,,0
+INV-900003,ACC-9003,Initech Test Inc,,APAC,Gaming,ENT,monthly,2,GBP,-759.46 GBP,0,refunded,,2022-06-01,13-05-2024,TRUE,2,3
+INV-900004,ACC-9004,Hooli Test LLC,billing@hooli.test,LATAM,Education,starter,monthly,20,USD,$980.00,0,paid,Credit Card,2023-02-01,2024-06-10,false,5,0
+INV-900004,ACC-9004,Hooli Test LLC,billing@hooli.test,LATAM,Education,starter,monthly,20,USD,$980.00,0,PAID,Credit Card,2023-02-01,2024-06-10,false,5,0
+INV-900005,ACC-9005,Unknown Plan Co,billing@plan.test,NA,Retail,Platinum,monthly,10,USD,990.00,0,paid,ach,2023-01-15,2024-03-01,no,4,1
+INV-900006,ACC-9006,Impossible Date Co,billing@date.test,NA,Retail,Pro,monthly,10,USD,990.00,0,paid,ach,2023-01-15,2024-02-30,no,4,1
+INV-900007,ACC-9007,Wrong Symbol Co,billing@symbol.test,NA,Retail,Pro,monthly,10,USD,€990.00,0,paid,ach,2023-01-15,2024-03-01,no,4,1
+INV-900008,ACC-9008,Two Amounts Co,billing@amounts.test,NA,Retail,Pro,monthly,10,USD,990.00,0,paid,ach,2023-01-15,2024-03-01,no,4,1
+INV-900008,ACC-9008,Two Amounts Co,billing@amounts.test,NA,Retail,Pro,monthly,10,USD,995.00,0,paid,ach,2023-01-15,2024-03-01,no,4,1
