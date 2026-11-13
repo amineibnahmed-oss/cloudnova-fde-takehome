@@ -23,12 +23,14 @@ How each stakeholder question from the briefing is calculated on the cleaned tab
 ### Q1. Total recognized revenue in USD for paid invoices in 2024
 
 ```sql
-SELECT SUM(amount_usd) AS paid_revenue_usd, COUNT(*) AS invoices
+SELECT SUM(amount_usd) FILTER (WHERE status = 'paid') AS paid_revenue_usd,
+       COUNT(*) FILTER (WHERE status = 'paid') AS paid_invoices,
+       SUM(recognized_revenue_usd) AS net_recognized_usd
 FROM invoices
-WHERE status = 'paid' AND invoice_year = 2024;
+WHERE invoice_year = 2024;
 ```
 
-Expected: **$32,655,352.52** from 888 invoices. The answer also states the net figure after the 70 refunds dated 2024 (-$1,931,282.82): **$30,724,069.70**, which is `SELECT SUM(recognized_revenue_usd) FROM invoices WHERE invoice_year = 2024`. Caveats: C1, C5.
+Expected: paid revenue **$32,655,352.52** from 888 invoices. Net of the 70 refunds dated 2024 (-$1,931,282.82): **$30,724,069.70**. Caveats: C1, C5.
 
 ### Q2. Region with the highest average MRR per account
 
@@ -60,7 +62,8 @@ Expected: **$8,925,163.84** across 292 refunds. Caveats: C1, C5.
 SELECT plan, COUNT(*) AS accounts, SUM(CASE WHEN churned THEN 1 ELSE 0 END) AS churned_accounts,
        ROUND(100.0 * SUM(CASE WHEN churned THEN 1 ELSE 0 END) / COUNT(*), 2) AS churn_rate_pct
 FROM accounts
-GROUP BY plan;
+GROUP BY plan
+ORDER BY plan;
 ```
 
 Expected: **Enterprise 21.92%** (171 of 780), **Starter 18.81%** (354 of 1,882). Pro is 19.77% (228 of 1,153). Caveat: C2.
@@ -93,7 +96,8 @@ None of the five is flagged. Three of the five (ACC-7509, ACC-1420, ACC-1196) mi
 SELECT status, COUNT(*) AS invoices, SUM(amount_usd) AS exposed_usd
 FROM invoices
 WHERE status IN ('pending', 'failed')
-GROUP BY status;
+GROUP BY status
+ORDER BY status;
 ```
 
 Expected: pending 505 invoices, $15,934,168.41. Failed 398 invoices, $13,207,147.36. Total **903 invoices, $29,141,315.77**. Caveats: C1, C4, C5.
@@ -107,7 +111,7 @@ The application attaches these by code, based on what the final SQL reads. The m
 | C1 | any USD amount column | EUR and GBP invoices are converted at the briefing's rates (multiply by 1.08 and 1.27). In this export those invoices sit above the USD list price, so finance should confirm the direction. Dividing instead gives a lower figure. |
 | C2 | `accounts`, or `account_id` / `account_name` in `invoices` | `account_id` is not a reliable customer key in this export: 976 of the 980 accounts with 2 or more invoices show different company names. Account-level answers use each account's latest invoice. |
 | C3 | `invoice_month`, `signup_date`, or a month or day taken from a date | 565 invoice dates and 579 signup dates can be read two ways and rely on the format rule (slash is month first, dash is day first). Years are never affected. |
-| C4 | `invoices` or `accounts` without a filter that keeps only years before the as-of year | Some invoices are dated after today (107 as of 2026-11-12). They are included. |
+| C4 | `invoices` or `accounts` without a filter that keeps only years before the as-of year | N invoices are dated after the as-of date and are included (107 as of 2026-11-12). The count and the date are taken from the run report. |
 | C5 | `status` or `recognized_revenue_usd` | 16 invoices appeared twice with clashing statuses. The safest status was kept, so none of them counts as paid unless every copy said paid. |
 
 ## 4. How much each open decision moves the answers

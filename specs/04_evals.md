@@ -28,6 +28,7 @@ Money matches within 0.01. Counts, labels and ordered lists match exactly.
 | P9 | Flags | `dq_missing_cents` 121, `dq_amount_off_formula` 0, `dq_invoice_date_ambiguous` 565, `dq_future_dated` 107 with as-of 2026-11-12 |
 | P10 | Accounts | 3,815 accounts, 3,062 active, 976 with `dq_identity_conflict` |
 | P11 | Emails stay out of reach | `invoices` has no email column. 285 NULL and 139 repaired in `invoice_contacts` |
+| P13 | The standalone reference script agrees with the database | `evals/reference/expected_from_spec.py` and the reference SQL give the same values for Q1 to Q6 |
 | P12 | Bad rows are set aside, not guessed | A fixture file with an unknown plan, an impossible date, a currency mismatch and a duplicate that differs in amount yields 4 reject reasons and no crash |
 
 ## 3. Metric cases (offline)
